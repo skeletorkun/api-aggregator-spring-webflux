@@ -10,6 +10,7 @@ import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple3;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @RequiredArgsConstructor
 @Service
@@ -24,6 +25,10 @@ public class AggregationServiceImpl implements AggregationService {
         Mono<ShipmentDto> shipmentMono = this.shipmentService.get(shipments);
         Mono<TrackingDto> trackingMono = this.trackingService.get(track);
         Mono<PricingDto> pricingMono = this.pricingService.get(pricing);
+
+        CompletableFuture.allOf(
+
+        )
         return Mono.zip(shipmentMono, trackingMono, pricingMono).map(this::buildAggregate);
     }
 
