@@ -1,7 +1,6 @@
-package com.example.apiaggregatorwebflux.web.services;
+package com.example.apiaggregator.web.services;
 
-import com.example.apiaggregatorwebflux.web.model.ShipmentDto;
-import com.example.apiaggregatorwebflux.web.model.TrackingDto;
+import com.example.apiaggregator.web.model.ShipmentDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
@@ -12,12 +11,12 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class TrackingServiceImpl implements TrackingService {
+public class ShipmentServiceImpl implements ShipmentService {
 
-    private static final String BASE_URL = "http://localhost:8080/track";
+    private static final String BASE_URL = "http://localhost:8080/shipments";
     private final WebClient client;
 
-    public TrackingServiceImpl() {
+    public ShipmentServiceImpl() {
         this.client = WebClient.builder()
                 .baseUrl(BASE_URL)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, "application/json")
@@ -26,7 +25,7 @@ public class TrackingServiceImpl implements TrackingService {
     }
 
     @Override
-    public Mono<TrackingDto> get(List<String> orderIds) {
+    public Mono<ShipmentDto> get(List<String> orderIds) {
 
         if(orderIds == null || orderIds.isEmpty()) return Mono.empty();
 
@@ -34,9 +33,9 @@ public class TrackingServiceImpl implements TrackingService {
                 .get()
                 .uri("?q=" + String.join(",", orderIds))
                 .retrieve()
-                .bodyToMono(TrackingDto.class)
+                .bodyToMono(ShipmentDto.class)
                 .onErrorResume(ex -> {
-                    log.error("Failed to retrieve Tracking {}", orderIds, ex);
+                    log.error("Failed to retrieve Shipments {}", orderIds, ex);
                     return Mono.empty();
                 });
     }

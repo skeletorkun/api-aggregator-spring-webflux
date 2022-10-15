@@ -1,27 +1,22 @@
-package com.example.apiaggregatorwebflux.web.services;
+package com.example.apiaggregator.web.services;
 
-import com.example.apiaggregatorwebflux.web.model.Product;
-import com.example.apiaggregatorwebflux.web.model.ShipmentDto;
-import lombok.RequiredArgsConstructor;
+import com.example.apiaggregator.web.model.TrackingDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.util.UriBuilder;
 import reactor.core.publisher.Mono;
 
-import java.net.URI;
 import java.util.List;
 
 @Slf4j
 @Service
-public class ShipmentServiceImpl implements ShipmentService {
+public class TrackingServiceImpl implements TrackingService {
 
-    private static final String BASE_URL = "http://localhost:8080/shipments";
+    private static final String BASE_URL = "http://localhost:8080/track";
     private final WebClient client;
 
-    public ShipmentServiceImpl() {
+    public TrackingServiceImpl() {
         this.client = WebClient.builder()
                 .baseUrl(BASE_URL)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, "application/json")
@@ -30,7 +25,7 @@ public class ShipmentServiceImpl implements ShipmentService {
     }
 
     @Override
-    public Mono<ShipmentDto> get(List<String> orderIds) {
+    public Mono<TrackingDto> get(List<String> orderIds) {
 
         if(orderIds == null || orderIds.isEmpty()) return Mono.empty();
 
@@ -38,9 +33,9 @@ public class ShipmentServiceImpl implements ShipmentService {
                 .get()
                 .uri("?q=" + String.join(",", orderIds))
                 .retrieve()
-                .bodyToMono(ShipmentDto.class)
+                .bodyToMono(TrackingDto.class)
                 .onErrorResume(ex -> {
-                    log.error("Failed to retrieve Shipments {}", orderIds, ex);
+                    log.error("Failed to retrieve Tracking {}", orderIds, ex);
                     return Mono.empty();
                 });
     }

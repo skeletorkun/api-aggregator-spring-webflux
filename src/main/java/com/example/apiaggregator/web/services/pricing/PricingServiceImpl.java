@@ -1,6 +1,6 @@
-package com.example.apiaggregatorwebflux.web.services;
+package com.example.apiaggregator.web.services.pricing;
 
-import com.example.apiaggregatorwebflux.web.model.PricingDto;
+import com.example.apiaggregator.web.model.PricingDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.scheduling.annotation.Async;
@@ -47,10 +47,21 @@ public class PricingServiceImpl implements PricingService {
                 });
     }
 
-    @Async
+
+    @Async("asyncExecutor")
     @Override
     public Future<PricingDto> fetch(List<String> countryCodes) {
+
+        //sub to queue
+
+        // pub items
+
+        // in callback, make the rest template call and return
+
+
+
         return CompletableFuture.completedFuture(
+                // when
                 this.restTemplate
                         .getForObject("?q=" + String.join(",", countryCodes), PricingDto.class)
         );

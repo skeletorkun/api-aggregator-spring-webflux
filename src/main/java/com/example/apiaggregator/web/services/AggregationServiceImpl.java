@@ -1,9 +1,10 @@
-package com.example.apiaggregatorwebflux.web.services;
+package com.example.apiaggregator.web.services;
 
-import com.example.apiaggregatorwebflux.web.model.AggregateDto;
-import com.example.apiaggregatorwebflux.web.model.PricingDto;
-import com.example.apiaggregatorwebflux.web.model.ShipmentDto;
-import com.example.apiaggregatorwebflux.web.model.TrackingDto;
+import com.example.apiaggregator.web.model.AggregateDto;
+import com.example.apiaggregator.web.model.PricingDto;
+import com.example.apiaggregator.web.model.ShipmentDto;
+import com.example.apiaggregator.web.model.TrackingDto;
+import com.example.apiaggregator.web.services.pricing.PricingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -25,10 +26,6 @@ public class AggregationServiceImpl implements AggregationService {
         Mono<ShipmentDto> shipmentMono = this.shipmentService.get(shipments);
         Mono<TrackingDto> trackingMono = this.trackingService.get(track);
         Mono<PricingDto> pricingMono = this.pricingService.get(pricing);
-
-        CompletableFuture.allOf(
-
-        )
         return Mono.zip(shipmentMono, trackingMono, pricingMono).map(this::buildAggregate);
     }
 

@@ -1,6 +1,6 @@
-package com.example.apiaggregatorwebflux.web.services;
+package com.example.apiaggregator.web.services.pricing;
 
-import com.example.apiaggregatorwebflux.web.model.PricingDto;
+import com.example.apiaggregator.web.model.PricingDto;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
