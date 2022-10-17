@@ -1,40 +1,50 @@
 package com.example.apiaggregator.queue;
 
+import com.example.apiaggregator.web.model.events.LimitReachedEvent;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.jms.core.JmsTemplate;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 @Slf4j
+@RequiredArgsConstructor
 public class TimedQueue {
 
     static final int QUEUE_SIZE = 5;
     static final int QUEUE_MAX_DELAY_IN_MS = 5000;
 
-    Timer timer;
-    List<String> queue; // use sth synchronized
+    private final List<String> items = Collections.synchronizedList(new ArrayList<>());
 
-    public void push(List<String> items){
-        for (String item: items){
+    private Timer timer;
+    private final JmsTemplate jmsTemplate;
+    private final String queueName;
+
+    public void push(List<String> items) {
+        log.info("Pushing items {}", items);
+        for (String item : items) {
             push(item);
         }
     }
 
     private void push(String item) {
-        if(queue.isEmpty()){
+        if (items.isEmpty()) {
             setTimer();
         }
 
-        queue.add(item);
-        if(queue.size() == QUEUE_SIZE){
+        items.add(item);
+        if (items.size() == QUEUE_SIZE) {
             flush();
         }
 
     }
 
-    private void setTimer(){
+    private void setTimer() {
         TimerTask task = new TimerTask() {
             public void run() {
                 flush();
@@ -46,11 +56,14 @@ public class TimedQueue {
         timer.schedule(task, QUEUE_MAX_DELAY_IN_MS);
     }
 
-    private void flush(){
+    private void flush() {
+
+        log.info("Flushing items {}", items);
 
         // notify listeners
+        jmsTemplate.convertAndSend(queueName, new LimitReachedEvent(items));
 
-        queue.clear();
+        items.clear();
         timer.cancel();
     }
 }

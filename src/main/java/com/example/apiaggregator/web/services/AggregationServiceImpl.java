@@ -11,7 +11,6 @@ import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple3;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 @RequiredArgsConstructor
 @Service
@@ -23,10 +22,13 @@ public class AggregationServiceImpl implements AggregationService {
 
     @Override
     public Mono<AggregateDto> get(List<String> pricing, List<String> track, List<String> shipments) {
-        Mono<ShipmentDto> shipmentMono = this.shipmentService.get(shipments);
-        Mono<TrackingDto> trackingMono = this.trackingService.get(track);
-        Mono<PricingDto> pricingMono = this.pricingService.get(pricing);
-        return Mono.zip(shipmentMono, trackingMono, pricingMono).map(this::buildAggregate);
+//        Mono<ShipmentDto> shipmentMono = this.shipmentService.get(shipments);
+//        Mono<TrackingDto> trackingMono = this.trackingService.get(track);
+//        Mono<PricingDto> pricingMono = this.pricingService.get(pricing);
+//        return Mono.zip(shipmentMono, trackingMono, pricingMono).map(this::buildAggregate);
+
+        this.pricingService.fetch(pricing);
+        return Mono.empty();
     }
 
     private AggregateDto buildAggregate(Tuple3<ShipmentDto, TrackingDto, PricingDto> tuple) {
