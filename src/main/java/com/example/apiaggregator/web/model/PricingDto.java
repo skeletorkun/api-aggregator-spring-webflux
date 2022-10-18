@@ -1,7 +1,6 @@
-package com.example.apiaggregatorwebflux.web.model;
+package com.example.apiaggregator.web.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 
 import java.util.HashMap;
 

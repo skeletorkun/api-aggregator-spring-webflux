@@ -1,6 +1,6 @@
-package com.example.apiaggregatorwebflux.web.services;
+package com.example.apiaggregator.web.services;
 
-import com.example.apiaggregatorwebflux.web.model.AggregateDto;
+import com.example.apiaggregator.web.model.AggregateDto;
 import reactor.core.publisher.Mono;
 
 import java.util.List;

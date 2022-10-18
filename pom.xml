@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.example</groupId>
-    <artifactId>api-aggregator-webflux</artifactId>
+    <artifactId>api-aggregator</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>api-aggregator-webflux</name>
-    <description>api-aggregator-webflux</description>
+    <name>api-aggregator</name>
+    <description>api-aggregator</description>
     <properties>
         <java.version>11</java.version>
     </properties>

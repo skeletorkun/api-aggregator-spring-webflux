@@ -1,17 +1,12 @@
-package com.example.apiaggregatorwebflux.web.services;
+package com.example.apiaggregator.web.services;
 
-import com.example.apiaggregatorwebflux.web.model.Product;
-import com.example.apiaggregatorwebflux.web.model.ShipmentDto;
-import lombok.RequiredArgsConstructor;
+import com.example.apiaggregator.web.model.ShipmentDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.util.UriBuilder;
 import reactor.core.publisher.Mono;
 
-import java.net.URI;
 import java.util.List;
 
 @Slf4j
