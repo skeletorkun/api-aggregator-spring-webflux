@@ -8,6 +8,4 @@ import java.util.concurrent.Future;
 
 public interface PricingService {
     Mono<PricingDto> get(List<String> countryCodes);
-
-    Mono<PricingDto> fetch(List<String> countryCodes);
 }
