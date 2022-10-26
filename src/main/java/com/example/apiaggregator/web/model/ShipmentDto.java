@@ -1,6 +1,7 @@
 package com.example.apiaggregator.web.model;
 
 import lombok.AllArgsConstructor;
+import lombok.ToString;
 
 import java.util.HashMap;
 import java.util.List;

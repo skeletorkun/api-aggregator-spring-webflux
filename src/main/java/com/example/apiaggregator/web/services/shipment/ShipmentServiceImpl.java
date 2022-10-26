@@ -1,5 +1,6 @@
-package com.example.apiaggregator.web.services;
+package com.example.apiaggregator.web.services.shipment;
 
+import com.example.apiaggregator.web.model.PricingDto;
 import com.example.apiaggregator.web.model.ShipmentDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -36,7 +37,7 @@ public class ShipmentServiceImpl implements ShipmentService {
                 .bodyToMono(ShipmentDto.class)
                 .onErrorResume(ex -> {
                     log.error("Failed to retrieve Shipments {}", orderIds, ex);
-                    return Mono.empty();
+                    return Mono.just(new ShipmentDto());
                 });
     }
 

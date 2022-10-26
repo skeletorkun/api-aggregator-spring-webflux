@@ -8,7 +8,5 @@ import java.util.Set;
 import java.util.concurrent.Future;
 
 public interface PricingService {
-    Mono<PricingDto> get(Set<String> countryCodes);
-
-    Mono<PricingDto> fetch(Set<String> countryCodes);
+    Mono<PricingDto> get(List<String> countryCodes);
 }

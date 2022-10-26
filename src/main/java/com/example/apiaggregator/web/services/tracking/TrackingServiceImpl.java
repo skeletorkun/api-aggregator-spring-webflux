@@ -1,5 +1,6 @@
-package com.example.apiaggregator.web.services;
+package com.example.apiaggregator.web.services.tracking;
 
+import com.example.apiaggregator.web.model.ShipmentDto;
 import com.example.apiaggregator.web.model.TrackingDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -36,7 +37,7 @@ public class TrackingServiceImpl implements TrackingService {
                 .bodyToMono(TrackingDto.class)
                 .onErrorResume(ex -> {
                     log.error("Failed to retrieve Tracking {}", orderIds, ex);
-                    return Mono.empty();
+                    return Mono.just(new TrackingDto());
                 });
     }
 

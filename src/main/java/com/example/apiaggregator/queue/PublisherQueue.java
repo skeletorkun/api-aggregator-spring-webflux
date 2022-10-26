@@ -21,19 +21,19 @@ public class PublisherQueue<T> {
     private final ConnectableFlux<T> connectableFlux;
     private final Sinks.Many<String> sink;
 
-
     public PublisherQueue(Function<List<String>, Mono<T>> transform) {
         sink = Sinks.many().multicast().onBackpressureBuffer();
 
         this.connectableFlux = sink.asFlux()
                 .bufferTimeout(QUEUE_SIZE, Duration.ofMillis(QUEUE_MAX_DELAY_IN_MS))
                 .flatMap(transform)
-                .onErrorResume(RuntimeException.class, (e) -> Mono.just())
                 .publish();
+        this.connectableFlux.connect();
     }
 
-    public void push(Set<String> items){
-        for (String item: items){
+    public void push(List<String> items) {
+        for (String item : items) {
+            log.info("Emitting next item {}", item);
             sink.tryEmitNext(item);
         }
     }
@@ -41,5 +41,4 @@ public class PublisherQueue<T> {
     public Disposable subscribe(Consumer<? super T> consumer) {
         return connectableFlux.subscribe(consumer);
     }
-
 }
