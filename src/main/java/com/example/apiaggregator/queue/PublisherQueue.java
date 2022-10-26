@@ -8,6 +8,7 @@ import reactor.core.publisher.Sinks;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -25,13 +26,13 @@ public class PublisherQueue<T> {
         sink = Sinks.many().multicast().onBackpressureBuffer();
 
         this.connectableFlux = sink.asFlux()
-                .buffer(QUEUE_SIZE)
-                .timeout(Duration.ofMillis(QUEUE_MAX_DELAY_IN_MS))
+                .bufferTimeout(QUEUE_SIZE, Duration.ofMillis(QUEUE_MAX_DELAY_IN_MS))
                 .flatMap(transform)
+                .onErrorResume(RuntimeException.class, (e) -> Mono.just())
                 .publish();
     }
 
-    public void push(List<String> items){
+    public void push(Set<String> items){
         for (String item: items){
             sink.tryEmitNext(item);
         }

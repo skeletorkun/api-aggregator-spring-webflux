@@ -11,9 +11,12 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
 
+import java.time.Duration;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
+import java.util.function.Consumer;
 
 @Slf4j
 @Service
@@ -34,12 +37,12 @@ public class PricingServiceImpl implements PricingService {
         this.restTemplate = new RestTemplate();
 
         this.publisherQueue = new PublisherQueue<PricingDto>((list) -> Mono.create(sink -> sink.success(this.restTemplate
-                                            .getForObject("?q=" + String.join(",", list), PricingDto.class))));
+                .getForObject("?q=" + String.join(",", list), PricingDto.class))));
 
     }
 
     @Override
-    public Mono<PricingDto> get(List<String> countryCodes) {
+    public Mono<PricingDto> get(Set<String> countryCodes) {
 
         if (countryCodes == null || countryCodes.isEmpty()) return Mono.empty();
 
@@ -50,14 +53,13 @@ public class PricingServiceImpl implements PricingService {
                 .bodyToMono(PricingDto.class)
                 .onErrorResume(ex -> {
                     log.error("Failed to retrieve Shipments {}", countryCodes, ex);
-                    return Mono.empty();
+                    return new PricingDto(true);
                 });
     }
 
-
     @Async("asyncExecutor")
     @Override
-    public Mono<PricingDto> fetch(List<String> countryCodes) {
+    public Mono<PricingDto> fetch(Set<String> countryCodes) {
 
         //sub to queue
 
@@ -66,14 +68,24 @@ public class PricingServiceImpl implements PricingService {
         // in callback, make the rest template call and return
 
         final var sink = Sinks.<PricingDto>one();
+        final var result = new PricingDto();
 
         final var disposable = publisherQueue.subscribe(dto -> {
-            // check if all of them retrieved
-            sink.tryEmitValue(dto);
+            dto.entrySet().stream().filter(e -> countryCodes.contains(e.getKey()))
+                    .forEach(e -> result.put(e.getKey(), e.getValue()));
+            if (dto.getHasError()) {
+                sink.tryEmitError(new RuntimeException("ALERT!!!"));
+                return;
+            }
+            if (result.keySet().containsAll(countryCodes)) {
+                sink.tryEmitValue(dto);
+            }
         });
 
         publisherQueue.push(countryCodes);
 
-        return sink.asMono().doOnTerminate(disposable::dispose);
+
+        return sink.asMono()
+                .doOnTerminate(disposable::dispose).timeout(Duration.ofSeconds(10));
     }
 }

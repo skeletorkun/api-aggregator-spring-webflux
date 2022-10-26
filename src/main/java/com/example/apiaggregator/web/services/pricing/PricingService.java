@@ -4,10 +4,11 @@ import com.example.apiaggregator.web.model.PricingDto;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Future;
 
 public interface PricingService {
-    Mono<PricingDto> get(List<String> countryCodes);
+    Mono<PricingDto> get(Set<String> countryCodes);
 
-    Mono<PricingDto> fetch(List<String> countryCodes);
+    Mono<PricingDto> fetch(Set<String> countryCodes);
 }
